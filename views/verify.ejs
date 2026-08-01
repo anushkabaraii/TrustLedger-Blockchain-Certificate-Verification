@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Verify Certificate | TrustLedger</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="public-verify-page">
+
+    <div class="public-verify-header">
+
+        <a href="/" class="public-logo">
+            <i class="bi bi-shield-check"></i>
+            <span>TrustLedger</span>
+        </a>
+
+        <div>
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-house-door"></i>
+                Home
+            </a>
+
+            <a href="/login" class="btn btn-admin">
+                <i class="bi bi-person-lock"></i>
+                Admin Login
+            </a>
+        </div>
+
+    </div>
+
+    <div class="public-verify-container">
+
+<h2>
+
+Verify Certificate
+
+</h2>
+
+<p>
+
+Enter the Certificate ID to verify its authenticity.
+
+</p>
+
+<div class="certificate-form">
+
+<form action="/verify"
+
+method="POST">
+
+<label class="form-label">
+
+Certificate ID
+
+</label>
+
+<input
+
+type="text"
+
+name="certificateId"
+
+class="form-control"
+
+placeholder="Enter Certificate ID"
+
+required>
+
+<div class="text-center mt-4">
+    <button
+
+type="submit"
+
+class="btn generate-btn">
+
+<i class="bi bi-patch-check-fill"></i>
+
+Verify Certificate
+
+</button>
+
+</div>
+
+</form>
+
+<hr class="my-5">
+
+<!-- Verification Result -->
+
+<% if (searched) { %>
+
+    <hr class="my-5">
+
+    <% if (certificate) { %>
+
+        <!-- VALID CERTIFICATE -->
+
+        <div class="verification-result">
+
+            <div class="verified-badge">
+
+                <i class="bi bi-patch-check-fill"></i>
+
+                Certificate Verified
+
+            </div>
+
+
+            <div class="row mt-4">
+
+                <div class="col-md-6 mb-3">
+
+                    <strong>Student Name</strong>
+
+                    <p><%= certificate.studentName %></p>
+
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+
+                    <strong>Roll Number</strong>
+
+                    <p><%= certificate.rollNumber %></p>
+
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+
+                    <strong>Course</strong>
+
+                    <p><%= certificate.course %></p>
+
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+
+                    <strong>Department</strong>
+
+                    <p><%= certificate.department %></p>
+
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+
+                    <strong>Certificate Title</strong>
+
+                    <p><%= certificate.certificateTitle %></p>
+
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+
+                    <strong>Result / Grade</strong>
+
+                    <p><%= certificate.grade %></p>
+
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+
+                    <strong>Issue Date</strong>
+
+                    <p><%= certificate.issueDate %></p>
+
+                </div>
+
+
+                <div class="col-md-6 mb-3">
+
+                    <strong>Certificate ID</strong>
+
+                    <p><%= certificate.certificateId %></p>
+
+                </div>
+
+            </div>
+
+
+            <% if (integrityValid) { %>
+
+    <div class="alert alert-success mt-3">
+
+        <i class="bi bi-shield-check"></i>
+
+        <strong>Blockchain Integrity:</strong>
+
+        Valid — No Tampering Detected
+
+    </div>
+
+<% } else { %>
+
+    <div class="alert alert-danger mt-3">
+
+        <i class="bi bi-exclamation-triangle-fill"></i>
+
+        <strong>Integrity Check Failed:</strong>
+
+        Certificate data may have been modified.
+
+    </div>
+
+<% } %>
+
+
+            <div class="text-center mt-4">
+
+                <img
+                    src="<%= certificate.qrCode %>"
+                    alt="Certificate QR Code"
+                    width="160"
+                >
+
+                <p class="mt-3 text-muted">
+                    Verified using TrustLedger
+                </p>
+
+            </div>
+
+
+            <div class="text-center mt-4">
+
+                <a
+                    href="/certificate?id=<%= certificate.certificateId %>"
+                    class="btn btn-admin">
+
+                    <i class="bi bi-eye-fill"></i>
+
+                    View Certificate
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+    <% } else { %>
+
+        <!-- INVALID CERTIFICATE -->
+
+        <div class="alert alert-danger text-center p-4">
+
+            <i
+                class="bi bi-x-circle-fill"
+                style="font-size:35px;">
+            </i>
+
+            <h4 class="mt-3">
+                Certificate Not Found
+            </h4>
+
+            <p class="mb-0">
+                No certificate exists with this Certificate ID.
+            </p>
+
+        </div>
+
+    <% } %>
+
+<% } %>
+</div>
+
+    <!-- PUBLIC PAGE BOTTOM NAVIGATION -->
+
+    <div class="text-center mt-4 mb-4">
+
+        <a href="/" class="text-decoration-none">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Back to Home
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

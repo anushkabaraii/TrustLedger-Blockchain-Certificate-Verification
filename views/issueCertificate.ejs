@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Issue Certificate | TrustLedger</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-wrapper">
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<div class="sidebar-logo">
+
+<i class="bi bi-shield-check"></i>
+
+<h3>TrustLedger</h3>
+
+</div>
+
+<ul>
+
+<li>
+
+<a href="/dashboard">
+
+<i class="bi bi-speedometer2"></i>
+
+Dashboard
+
+</a>
+
+</li>
+
+<li class="active">
+
+<a href="/issue">
+
+<i class="bi bi-award"></i>
+
+Issue Certificate
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/certificates">
+
+<i class="bi bi-folder2-open"></i>
+
+Certificate List
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/verify">
+
+<i class="bi bi-search"></i>
+
+Verify Certificate
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/blockchain">
+
+<i class="bi bi-link-45deg"></i>
+
+Blockchain Records
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/logout">
+
+<i class="bi bi-box-arrow-right"></i>
+
+Logout
+
+</a>
+
+</li>
+
+</ul>
+
+</div>
+
+<!-- Main -->
+
+<div class="dashboard-content">
+
+<h2>
+
+Issue New Certificate
+
+</h2>
+
+<p>
+
+Fill in the details below to generate a blockchain-secured certificate.
+
+</p>
+
+<div class="certificate-form">
+
+<form action="/issue"
+
+method="POST">
+
+<div class="row">
+    <!-- Row 1 -->
+
+<div class="col-lg-6 mb-4">
+
+<label class="form-label">
+
+Student Name
+
+</label>
+
+<input
+
+type="text"
+
+name="studentName"
+
+class="form-control"
+
+placeholder="Enter Student Name"
+
+required>
+
+</div>
+
+<div class="col-lg-6 mb-4">
+
+<label class="form-label">
+
+Roll Number
+
+</label>
+
+<input
+
+type="text"
+
+name="rollNumber"
+
+class="form-control"
+
+placeholder="Enter Roll Number"
+
+required>
+
+</div>
+
+<!-- Row 2 -->
+
+<div class="col-lg-6 mb-4">
+
+<label class="form-label">
+
+Email Address
+
+</label>
+
+<input
+
+type="email"
+
+name="email"
+
+class="form-control"
+
+placeholder="Enter Email Address"
+
+required>
+
+</div>
+
+<div class="col-lg-6 mb-4">
+
+<label class="form-label">
+
+Course Name
+
+</label>
+
+<input
+
+type="text"
+
+name="course"
+
+class="form-control"
+
+placeholder="Enter Course Name"
+
+required>
+
+</div>
+
+<!-- Row 3 -->
+
+<div class="col-lg-6 mb-4">
+
+<label class="form-label">
+
+Department
+
+</label>
+
+<input
+
+type="text"
+
+name="department"
+
+class="form-control"
+
+placeholder="Enter Department"
+
+required>
+
+</div>
+
+<div class="col-lg-6 mb-4">
+
+<label class="form-label">
+
+Certificate Title
+
+</label>
+
+<input
+
+type="text"
+
+name="certificateTitle"
+
+class="form-control"
+
+placeholder="Enter Certificate Title"
+
+required>
+
+</div>
+
+<!-- Row 4 -->
+
+<div class="col-lg-6 mb-4">
+
+<label class="form-label">
+
+Result / Grade
+
+</label>
+
+<select
+
+name="grade"
+
+class="form-select"
+
+required>
+
+<option value="">
+
+Select Result / Grade
+
+</option>
+
+<option>A+</option>
+
+<option>A</option>
+
+<option>B+</option>
+
+<option>B</option>
+
+<option>C</option>
+
+<option>Pass</option>
+
+<option>Distinction</option>
+
+<option>First Class</option>
+
+<option>Successfully Completed</option>
+
+</select>
+
+</div>
+
+<div class="col-lg-6 mb-4">
+
+<label class="form-label">
+
+Issue Date
+
+</label>
+
+<input
+
+type="date"
+
+name="issueDate"
+
+class="form-control"
+
+required>
+
+</div>
+
+</div>
+<div class="text-center mt-4">
+
+<button
+
+type="submit"
+
+class="btn generate-btn">
+
+<i class="bi bi-patch-check-fill"></i>
+
+Generate Certificate
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+<div class="dashboard-footer">
+
+<p>
+
+Developed by
+
+<strong>Anushka Barai</strong>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

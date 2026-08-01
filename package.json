@@ -1,0 +1,33 @@
+{
+  "name": "blockchain-certificate-verification",
+  "version": "1.0.0",
+  "description": "Blockchain-Based Digital Certificate Verification System",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "blockchain",
+    "certificate",
+    "verification",
+    "nodejs",
+    "express",
+    "ejs"
+  ],
+  "author": "Anushka Barai",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.1",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "lowdb": "^7.0.1",
+    "qrcode": "^1.5.4",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

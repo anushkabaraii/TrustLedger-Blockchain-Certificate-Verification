@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Certificate | TrustLedger</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            font-family: 'Poppins', sans-serif;
+
+            background: linear-gradient(
+                135deg,
+                #FFFFF0 0%,
+                #FFE4E1 50%,
+                #E6E6FA 100%
+            );
+
+            color: #3e3e50;
+            overflow-x: hidden;
+        }
+
+        .certificate-page {
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        /* ================= CERTIFICATE ================= */
+
+        .certificate-card {
+
+            max-width: 950px;
+            margin: auto;
+
+            background: linear-gradient(
+                135deg,
+                #FFFFF0 0%,
+                #FFF0F3 45%,
+                #EEEAFB 100%
+            );
+
+            border-radius: 30px;
+
+            padding: 60px 55px;
+
+            border: 3px solid #8D7BFF;
+
+            box-shadow:
+                0 25px 60px rgba(75,44,136,.20),
+                inset 0 0 0 7px rgba(255,255,255,.75),
+                inset 0 0 0 9px rgba(141,123,255,.25);
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative Circles */
+
+        .certificate-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 280px;
+            height: 280px;
+
+            top: -140px;
+            left: -130px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                rgba(141,123,255,.35),
+                rgba(200,167,255,.12)
+            );
+
+            z-index: 0;
+        }
+
+        .certificate-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            bottom: -160px;
+            right: -140px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                rgba(255,182,193,.30),
+                rgba(141,123,255,.25)
+            );
+
+            z-index: 0;
+        }
+
+        /* Keep content above decoration */
+
+        .certificate-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ================= HEADER ================= */
+
+        .certificate-header {
+
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .certificate-header i {
+
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            width: 80px;
+            height: 80px;
+
+            border-radius: 50%;
+
+            font-size: 44px;
+
+            color: #ffffff;
+
+            background: linear-gradient(
+                135deg,
+                #8D7BFF,
+                #B895FF
+            );
+
+            box-shadow:
+                0 12px 25px rgba(141,123,255,.30);
+        }
+
+        .certificate-header h2 {
+
+            font-size: 34px;
+
+            font-weight: 700;
+
+            color: #4b2c88;
+
+            margin-top: 18px;
+            margin-bottom: 5px;
+        }
+
+        .certificate-header p {
+
+            color: #777;
+
+            font-size: 14px;
+
+            letter-spacing: 1px;
+        }
+
+        /* ================= TITLE ================= */
+
+        .certificate-title {
+
+            text-align: center;
+
+            margin: 35px 0 25px;
+        }
+
+        .certificate-title h1 {
+
+            font-size: 42px;
+
+            font-weight: 700;
+
+            color: #4b2c88;
+
+            text-transform: capitalize;
+
+            letter-spacing: 1px;
+
+            margin: 0;
+        }
+
+        .certificate-title::after {
+
+            content: "";
+
+            display: block;
+
+            width: 120px;
+            height: 4px;
+
+            margin: 15px auto 0;
+
+            border-radius: 20px;
+
+            background: linear-gradient(
+                90deg,
+                #8D7BFF,
+                #C8A7FF
+            );
+        }
+
+        /* ================= STUDENT ================= */
+
+        .certificate-text {
+
+            text-align: center;
+
+            color: #666;
+
+            font-size: 16px;
+        }
+
+        .student-name {
+
+            font-size: 36px;
+
+            font-weight: 700;
+
+            color: #33235c;
+
+            text-align: center;
+
+            margin: 18px 0;
+        }
+
+        /* ================= DETAILS ================= */
+
+        .details-box {
+
+            background: rgba(255,255,255,.55);
+
+            backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(141,123,255,.25);
+
+            border-radius: 22px;
+
+            padding: 30px;
+
+            margin-top: 35px;
+
+            box-shadow:
+                0 12px 30px rgba(141,123,255,.10);
+        }
+
+        .detail-item {
+
+            margin-bottom: 18px;
+
+            color: #555;
+        }
+
+        .detail-label {
+
+            display: block;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            color: #7C5AC2;
+
+            margin-bottom: 4px;
+        }
+
+        /* ================= QR ================= */
+
+        .qr-section {
+
+            text-align: center;
+
+            margin-top: 35px;
+        }
+
+        .qr-section h5 {
+
+            color: #4b2c88;
+
+            font-weight: 600;
+
+            margin-bottom: 18px;
+        }
+
+        .qr-section img {
+
+            width: 165px;
+            height: 165px;
+
+            background: #fff;
+
+            padding: 8px;
+
+            border-radius: 15px;
+
+            border: 2px solid #dcd3ff;
+
+            box-shadow:
+                0 10px 25px rgba(75,44,136,.15);
+        }
+
+        /* ================= HASH ================= */
+
+        .hash-box {
+
+            background: linear-gradient(
+                135deg,
+                rgba(230,230,250,.75),
+                rgba(255,228,225,.65)
+            );
+
+            border: 1px solid #dcd3ff;
+
+            padding: 20px;
+
+            border-radius: 16px;
+
+            margin-top: 30px;
+
+            word-break: break-all;
+
+            font-size: 13px;
+
+            color: #555;
+        }
+
+        .hash-box strong {
+
+            color: #4b2c88;
+
+            font-size: 15px;
+        }
+
+        /* ================= VERIFIED ================= */
+
+        .verified {
+
+            color: #198754;
+
+            font-weight: 600;
+
+            text-align: center;
+
+            margin-top: 25px;
+
+            font-size: 16px;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .certificate-actions {
+
+            text-align: center;
+
+            margin-top: 30px;
+        }
+
+        .certificate-actions a,
+        .certificate-actions button {
+
+            margin: 5px;
+
+            border-radius: 50px;
+
+            padding: 11px 24px;
+
+            font-weight: 500;
+        }
+
+        .print-btn {
+
+            border: none;
+
+            color: white;
+
+            background: linear-gradient(
+                90deg,
+                #8D7BFF,
+                #C8A7FF
+            );
+
+            box-shadow:
+                0 10px 22px rgba(141,123,255,.25);
+        }
+
+        .print-btn:hover {
+
+            color: white;
+
+            background: linear-gradient(
+                90deg,
+                #7C5AC2,
+                #B895FF
+            );
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media(max-width:768px) {
+
+            .certificate-page {
+                padding: 20px 12px;
+            }
+
+            .certificate-card {
+                padding: 40px 25px;
+            }
+
+            .certificate-title h1 {
+                font-size: 31px;
+            }
+
+            .student-name {
+                font-size: 28px;
+            }
+
+        }
+
+        /* ================= PRINT ================= */
+
+        @media print {
+
+            body {
+                background: white;
+            }
+
+            .certificate-page {
+                padding: 0;
+            }
+
+            .certificate-card {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+            }
+
+            .certificate-actions {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="certificate-page">
+
+    <div class="certificate-card">
+
+        <div class="certificate-header">
+
+            <i class="bi bi-shield-check"></i>
+
+            <h2>TrustLedger</h2>
+
+            <p>BLOCKCHAIN SECURED DIGITAL CERTIFICATE</p>
+
+        </div>
+
+
+        <div class="certificate-title">
+
+            <h1>
+                <%= certificate.certificateTitle %>
+            </h1>
+
+        </div>
+
+
+        <p class="certificate-text">
+            This certificate is proudly awarded to
+        </p>
+
+
+        <div class="student-name">
+            <%= certificate.studentName %>
+        </div>
+
+
+        <p class="certificate-text">
+
+            for successfully fulfilling the requirements
+            of the stated program/certificate.
+
+        </p>
+
+
+        <div class="details-box">
+
+            <div class="row">
+
+                <div class="col-md-6 detail-item">
+
+                    <span class="detail-label">
+                        CERTIFICATE ID
+                    </span>
+
+                    <%= certificate.certificateId %>
+
+                </div>
+
+
+                <div class="col-md-6 detail-item">
+
+                    <span class="detail-label">
+                        ROLL NUMBER
+                    </span>
+
+                    <%= certificate.rollNumber %>
+
+                </div>
+
+
+                <div class="col-md-6 detail-item">
+
+                    <span class="detail-label">
+                        COURSE
+                    </span>
+
+                    <%= certificate.course %>
+
+                </div>
+
+
+                <div class="col-md-6 detail-item">
+
+                    <span class="detail-label">
+                        DEPARTMENT
+                    </span>
+
+                    <%= certificate.department %>
+
+                </div>
+
+
+                <div class="col-md-6 detail-item">
+
+                    <span class="detail-label">
+                        RESULT / GRADE
+                    </span>
+
+                    <%= certificate.grade %>
+
+                </div>
+
+
+                <div class="col-md-6 detail-item">
+
+                    <span class="detail-label">
+                        ISSUE DATE
+                    </span>
+
+                    <%= certificate.issueDate %>
+
+                </div>
+
+
+                <div class="col-md-6 detail-item">
+
+                    <span class="detail-label">
+                        EMAIL
+                    </span>
+
+                    <%= certificate.email %>
+
+                </div>
+
+
+                <div class="col-md-6 detail-item">
+
+                    <span class="detail-label">
+                        STATUS
+                    </span>
+
+                    <span class="badge bg-success">
+
+                        <i class="bi bi-patch-check-fill"></i>
+
+                        <%= certificate.status %>
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="qr-section">
+
+            <h5>
+                <i class="bi bi-qr-code"></i>
+                Certificate Verification
+            </h5>
+
+            <img
+                src="<%= certificate.qrCode %>"
+                alt="Certificate QR Code"
+            >
+
+            <p class="text-muted mt-3">
+                Scan QR code to verify authenticity
+            </p>
+
+        </div>
+
+
+        <div class="hash-box">
+
+            <strong>
+
+                <i class="bi bi-link-45deg"></i>
+
+                SHA-256 Certificate Hash
+
+            </strong>
+
+            <br><br>
+
+            <%= certificate.blockchainHash %>
+
+        </div>
+
+
+        <div class="verified">
+
+            <i class="bi bi-patch-check-fill"></i>
+
+            Verified & Secured by TrustLedger
+
+        </div>
+
+
+        <div class="certificate-actions">
+
+            <a
+                href="/verify"
+                class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+
+                Back to Verify
+
+            </a>
+
+
+            <button
+                onclick="window.print()"
+                class="btn print-btn">
+
+                <i class="bi bi-printer"></i>
+
+                Print Certificate
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

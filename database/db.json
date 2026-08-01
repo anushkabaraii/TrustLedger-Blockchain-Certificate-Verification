@@ -1,0 +1,50 @@
+{
+  "certificates": [
+    {
+      "certificateId": "TL2026883692",
+      "studentName": "Anushka Barai",
+      "rollNumber": "CS24D004",
+      "email": "anushkabarai05@gmail.com",
+      "course": "SEQA",
+      "department": "CSE",
+      "certificateTitle": "python",
+      "grade": "A+",
+      "issueDate": "2026-08-01",
+      "blockchainHash": "3269c59fc327828f12bdc0357e704b4f38520993bf1ed73b57005a7b9003e3cb",
+      "qrCode": "/qrcodes/TL2026883692.png",
+      "status": "Valid",
+      "createdAt": "2026-08-01T13:11:24.005Z"
+    },
+    {
+      "certificateId": "TL2026193763",
+      "studentName": "Karuna Chandelkar",
+      "rollNumber": "24",
+      "email": "karunachandel00@gmail.com",
+      "course": "DSA",
+      "department": "CSE",
+      "certificateTitle": "Certificate of Achievement",
+      "grade": "A",
+      "issueDate": "2026-08-01",
+      "blockchainHash": "cfefa75a7af5e496d0eb67413fe9988b4d30d62f330961f7ce672ab02deccdef",
+      "qrCode": "/qrcodes/TL2026193763.png",
+      "status": "Valid",
+      "createdAt": "2026-08-01T14:56:34.272Z"
+    },
+    {
+      "certificateId": "TL2026328236",
+      "studentName": "Manaswi Fiske",
+      "rollNumber": "DS02",
+      "email": "manaswifiske888@gmail.com",
+      "course": "IT",
+      "department": "DS",
+      "certificateTitle": "Certificate of Achievement",
+      "grade": "A",
+      "issueDate": "2026-08-01",
+      "blockchainHash": "6bfe745d401d3cd3c9b2dffce620efad7e76a2d18805076fbee8c2dfa8103a5c",
+      "previousHash": "cfefa75a7af5e496d0eb67413fe9988b4d30d62f330961f7ce672ab02deccdef",
+      "qrCode": "/qrcodes/TL2026328236.png",
+      "status": "Valid",
+      "createdAt": "2026-08-01T16:22:08.403Z"
+    }
+  ]
+}

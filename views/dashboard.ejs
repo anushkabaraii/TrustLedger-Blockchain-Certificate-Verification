@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard | TrustLedger</title>
+
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+rel="stylesheet">
+
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link
+rel="stylesheet"
+href="/css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-wrapper">
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar">
+
+<div class="sidebar-logo">
+
+<i class="bi bi-shield-check"></i>
+
+<h3>
+
+TrustLedger
+
+</h3>
+
+</div>
+
+<ul>
+
+<li class="active">
+
+<a href="/dashboard">
+
+<i class="bi bi-speedometer2"></i>
+
+Dashboard
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/issue">
+
+<i class="bi bi-award"></i>
+
+Issue Certificate
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/certificates">
+
+<i class="bi bi-folder2-open"></i>
+
+Certificate List
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/verify">
+
+<i class="bi bi-search"></i>
+
+Verify Certificate
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/blockchain">
+
+<i class="bi bi-link-45deg"></i>
+
+Blockchain Records
+
+</a>
+
+</li>
+
+<li>
+
+<a href="/logout">
+
+<i class="bi bi-box-arrow-right"></i>
+
+Logout
+
+</a>
+
+</li>
+
+</ul>
+
+</div>
+
+<!-- ================= MAIN ================= -->
+
+<div class="dashboard-content">
+
+<div class="topbar">
+
+<div>
+
+<h2>
+
+Welcome Back 👋
+
+</h2>
+
+<p>
+
+Manage your blockchain secured certificates securely.
+
+</p>
+
+</div>
+
+<div class="admin-profile">
+
+<div class="profile-circle">
+
+A
+
+</div>
+
+</div>
+
+</div>
+<!-- ================= STATISTICS ================= -->
+
+<div class="row g-4 mt-2">
+
+<div class="col-lg-4 col-md-6">
+
+<a href="/certificates" class="stats-card-link">
+
+<div class="stats-card">
+
+<div class="stats-icon purple">
+<i class="bi bi-award-fill"></i>
+</div>
+
+<div>
+<h3><%= totalCertificates %></h3>
+<p>Certificates Issued</p>
+</div>
+
+</div>
+
+</a>
+
+</div>
+
+<div class="col-lg-4 col-md-6">
+
+<div class="stats-card">
+
+<div class="stats-icon green">
+
+<i class="bi bi-patch-check-fill"></i>
+
+</div>
+
+<div>
+
+<h3><%= issuedToday %></h3>
+
+<p>Issued Today</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-4 col-md-12">
+
+<a href="/blockchain" class="stats-card-link">
+
+<div class="stats-card">
+
+<div class="stats-icon blue">
+<i class="bi bi-link-45deg"></i>
+</div>
+
+<div>
+<h3><%= blockchainRecords %></h3>
+<p>Blockchain Records</p>
+</div>
+
+</div>
+
+</a>
+
+</div>
+
+</div>
+
+<!-- ================= RECENT CERTIFICATES ================= -->
+
+<div class="dashboard-section mt-5">
+
+<h4>
+
+Recent Certificates
+
+</h4>
+
+<div class="table-responsive mt-3">
+
+<table class="table recent-table align-middle">
+
+<thead>
+
+<tr>
+
+<th>Certificate ID</th>
+
+<th>Student Name</th>
+
+<th>Course</th>
+
+<th>Status</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<% if (recentCertificates && recentCertificates.length > 0) { %>
+
+    <% recentCertificates.forEach(function(cert) { %>
+
+        <tr>
+
+            <td>
+                <strong>
+                    <%= cert.certificateId %>
+                </strong>
+            </td>
+
+            <td>
+                <%= cert.studentName %>
+            </td>
+
+            <td>
+                <%= cert.course %>
+            </td>
+
+            <td>
+
+                <span class="badge bg-success">
+
+                    <i class="bi bi-patch-check-fill"></i>
+
+                    <%= cert.status %>
+
+                </span>
+
+            </td>
+
+            <td>
+
+                <a
+                    href="/certificate?id=<%= cert.certificateId %>"
+                    class="btn btn-sm btn-admin">
+
+                    <i class="bi bi-eye-fill"></i>
+
+                    View
+
+                </a>
+
+            </td>
+
+        </tr>
+
+    <% }); %>
+
+
+<% } else { %>
+
+    <tr>
+
+        <td colspan="5" class="text-center py-5">
+
+            <div class="empty-state">
+
+                <i class="bi bi-file-earmark-x"></i>
+
+                <h5>
+                    No Certificates Issued Yet
+                </h5>
+
+                <p>
+                    Start by issuing your first blockchain secured certificate.
+                </p>
+
+                <a
+                    href="/issue"
+                    class="btn btn-admin">
+
+                    <i class="bi bi-plus-circle-fill"></i>
+
+                    Issue Certificate
+
+                </a>
+
+            </div>
+
+        </td>
+
+    </tr>
+
+<% } %>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+
+<div class="dashboard-footer">
+
+<p>
+
+Developed by
+
+<strong>Anushka Barai</strong>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
