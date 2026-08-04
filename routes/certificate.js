@@ -1,19 +1,79 @@
 const express = require("express");
 const router = express.Router();
 
-const certificateController = require("../controllers/certificateController");
-const isAdmin = require("../middleware/authMiddleware");
+const certificateController = require(
+  "../controllers/certificateController"
+);
 
-router.get("/issue", isAdmin, certificateController.issuePage);
+const isAdmin = require(
+  "../middleware/authMiddleware"
+);
 
-router.post("/issue", isAdmin, certificateController.generateCertificate);
+// ======================================================
+// ISSUE CERTIFICATE
+// ======================================================
 
-router.get("/certificates", isAdmin, certificateController.certificateList);
+// Show Issue Certificate page
+router.get(
+  "/issue",
+  isAdmin,
+  certificateController.issuePage
+);
 
-router.get("/verify", certificateController.verifyPage);
-router.post("/verify", certificateController.verifyCertificate);
+// Generate and save certificate
+router.post(
+  "/issue",
+  isAdmin,
+  certificateController.generateCertificate
+);
 
-router.get("/certificate", certificateController.certificatePage);
-router.get("/blockchain", isAdmin, certificateController.blockchainRecords);
+// ======================================================
+// CERTIFICATE LIST
+// ======================================================
+
+router.get(
+  "/certificates",
+  isAdmin,
+  certificateController.certificateList
+);
+
+// ======================================================
+// VERIFY CERTIFICATE
+// ======================================================
+
+// Public verification page
+router.get(
+  "/verify",
+  certificateController.verifyPage
+);
+
+// Manual certificate verification
+router.post(
+  "/verify",
+  certificateController.verifyCertificate
+);
+
+// ======================================================
+// VIEW CERTIFICATE
+// ======================================================
+
+router.get(
+  "/certificate",
+  certificateController.certificatePage
+);
+
+// ======================================================
+// BLOCKCHAIN RECORDS
+// ======================================================
+
+router.get(
+  "/blockchain",
+  isAdmin,
+  certificateController.blockchainRecords
+);
+
+// ======================================================
+// EXPORT ROUTER
+// ======================================================
 
 module.exports = router;

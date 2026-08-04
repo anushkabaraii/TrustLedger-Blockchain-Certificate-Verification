@@ -18,6 +18,7 @@ exports.loginPage = (req, res) => {
 exports.login = (req, res) => {
 
   const { username, password } = req.body;
+  
 
   // Admin credentials
   if (

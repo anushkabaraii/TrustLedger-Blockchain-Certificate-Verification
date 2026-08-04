@@ -2120,3 +2120,189 @@ transform:translateY(-3px);
         font-size: 28px;
     }
 }
+/* ==================================================
+   CERTIFICATE TEMPLATE SELECTION
+================================================== */
+
+.template-selection {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+    margin-top: 15px;
+}
+
+.template-card {
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.template-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Hide normal radio button */
+
+.template-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+/* Certificate mini preview */
+
+.template-preview {
+    height: 120px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    transition: 0.3s;
+}
+
+.template-preview i {
+    font-size: 30px;
+}
+
+.template-card h6 {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+}
+
+
+/* ==============================
+   TEMPLATE 1 - CLASSIC
+================================ */
+
+.classic-template {
+    background: #f8f9fa;
+    border: 4px double #343a40;
+    color: #343a40;
+}
+
+
+/* ==============================
+   TEMPLATE 2 - PURPLE
+================================ */
+
+.purple-template {
+    background: linear-gradient(
+        135deg,
+        #f3e8ff,
+        #ede9fe
+    );
+
+    border: 3px solid #7c3aed;
+    color: #6d28d9;
+}
+
+
+/* ==============================
+   TEMPLATE 3 - GOLD
+================================ */
+
+.gold-template {
+    background: linear-gradient(
+        135deg,
+        #fffbea,
+        #fff3c4
+    );
+
+    border: 4px double #c99700;
+    color: #9a6700;
+}
+
+
+/* ==============================
+   TEMPLATE 4 - BLUE
+================================ */
+
+.blue-template {
+    background: linear-gradient(
+        135deg,
+        #eaf3ff,
+        #dbeafe
+    );
+
+    border: 3px solid #2563eb;
+    color: #1d4ed8;
+}
+
+
+/* ==============================
+   TEMPLATE 5 - GREEN
+================================ */
+
+.green-template {
+    background: linear-gradient(
+        135deg,
+        #ecfdf5,
+        #d1fae5
+    );
+
+    border: 3px solid #059669;
+    color: #047857;
+}
+
+
+/* ==============================
+   SELECTED TEMPLATE
+================================ */
+
+.template-card:has(input[type="radio"]:checked) {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    transform: translateY(-4px);
+}
+
+.template-card:has(input[type="radio"]:checked)::after {
+    content: "✓ Selected";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #6366f1;
+    color: white;
+    padding: 4px 7px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+
+/* ==============================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 1200px) {
+
+    .template-selection {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .template-selection {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .template-selection {
+        grid-template-columns: 1fr;
+    }
+
+}

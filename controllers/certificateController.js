@@ -1,13 +1,26 @@
+require("dotenv").config();
+
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const QRCode = require("qrcode");
+const { Resend } = require("resend");
 
-// ================= DATABASE PATH =================
+// ======================================================
+// RESEND
+// ======================================================
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// ======================================================
+// DATABASE PATH
+// ======================================================
 
 const dbPath = path.join(__dirname, "../database/db.json");
 
-// ================= READ DATABASE =================
+// ======================================================
+// READ DATABASE
+// ======================================================
 
 function readDatabase() {
   try {
@@ -17,14 +30,26 @@ function readDatabase() {
       return { certificates: [] };
     }
 
-    return JSON.parse(data);
+    const database = JSON.parse(data);
+
+    if (!Array.isArray(database.certificates)) {
+      database.certificates = [];
+    }
+
+    return database;
+
   } catch (error) {
     console.error("Database Read Error:", error);
-    return { certificates: [] };
+
+    return {
+      certificates: []
+    };
   }
 }
 
-// ================= WRITE DATABASE =================
+// ======================================================
+// WRITE DATABASE
+// ======================================================
 
 function writeDatabase(data) {
   fs.writeFileSync(
@@ -34,20 +59,35 @@ function writeDatabase(data) {
   );
 }
 
-// ================= VERIFY CERTIFICATE INTEGRITY =================
+// ======================================================
+// CREATE HASH DATA
+// ======================================================
+
+function createHashData(data) {
+  return (
+    data.certificateId +
+    data.studentName +
+    data.rollNumber +
+    data.email +
+    data.course +
+    data.department +
+    data.certificateTitle +
+    data.grade +
+    data.issueDate
+  );
+}
+
+// ======================================================
+// VERIFY CERTIFICATE INTEGRITY
+// ======================================================
 
 function verifyCertificateIntegrity(certificate) {
 
-  const hashData =
-    certificate.certificateId +
-    certificate.studentName +
-    certificate.rollNumber +
-    certificate.email +
-    certificate.course +
-    certificate.department +
-    certificate.certificateTitle +
-    certificate.grade +
-    certificate.issueDate;
+  if (!certificate || !certificate.blockchainHash) {
+    return false;
+  }
+
+  const hashData = createHashData(certificate);
 
   const recalculatedHash = crypto
     .createHash("sha256")
@@ -57,32 +97,34 @@ function verifyCertificateIntegrity(certificate) {
   return recalculatedHash === certificate.blockchainHash;
 }
 
-// ================= VERIFY BLOCKCHAIN CHAIN =================
+// ======================================================
+// VERIFY BLOCKCHAIN CHAIN
+// ======================================================
 
 function verifyBlockchainChain(certificates) {
+
+  if (!Array.isArray(certificates)) {
+    return false;
+  }
 
   for (let i = 0; i < certificates.length; i++) {
 
     const currentCertificate = certificates[i];
 
-    // Skip old records that were created before previousHash was added
     if (!currentCertificate.previousHash) {
       continue;
     }
 
-    // First linked certificate / Genesis block
     if (currentCertificate.previousHash === "GENESIS") {
       continue;
     }
 
-    // Check previous certificate
     if (i === 0) {
       return false;
     }
 
     const previousCertificate = certificates[i - 1];
 
-    // Previous hash must match previous certificate's blockchain hash
     if (
       currentCertificate.previousHash !==
       previousCertificate.blockchainHash
@@ -94,16 +136,253 @@ function verifyBlockchainChain(certificates) {
   return true;
 }
 
-// ================= ISSUE PAGE =================
+// ======================================================
+// SEND CERTIFICATE EMAIL
+// ======================================================
+
+async function sendCertificateEmail(certificate, baseUrl) {
+
+  try {
+
+    const verifyUrl =
+      `${baseUrl}/verify?certificateId=${encodeURIComponent(
+        certificate.certificateId
+      )}`;
+
+    const viewUrl =
+      `${baseUrl}/certificate?id=${encodeURIComponent(
+        certificate.certificateId
+      )}`;
+
+    const response = await resend.emails.send({
+
+      // Resend testing sender
+      from: "TrustLedger <onboarding@resend.dev>",
+
+      to: certificate.email,
+
+      subject:
+        `Your Certificate Has Been Issued - ${certificate.certificateTitle}`,
+
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <body style="
+          margin:0;
+          padding:0;
+          background:#f4f6fb;
+          font-family:Arial,sans-serif;
+          color:#333;
+        ">
+
+          <div style="
+            max-width:650px;
+            margin:30px auto;
+            background:white;
+            border-radius:16px;
+            overflow:hidden;
+            box-shadow:0 8px 30px rgba(0,0,0,0.08);
+          ">
+
+            <div style="
+              background:linear-gradient(135deg,#4f46e5,#7c3aed);
+              padding:35px 25px;
+              text-align:center;
+              color:white;
+            ">
+
+              <h1 style="margin:0;">
+                TrustLedger
+              </h1>
+
+              <p style="
+                margin:8px 0 0;
+                opacity:.9;
+              ">
+                Blockchain Secured Certificate
+              </p>
+
+            </div>
+
+            <div style="padding:35px;">
+
+              <h2 style="
+                margin-top:0;
+                color:#222;
+              ">
+                Congratulations, ${certificate.studentName}! 🎉
+              </h2>
+
+              <p style="
+                font-size:16px;
+                line-height:1.7;
+              ">
+                Your certificate has been successfully issued
+                and secured by TrustLedger.
+              </p>
+
+              <div style="
+                background:#f7f7fb;
+                padding:22px;
+                border-radius:12px;
+                margin:25px 0;
+              ">
+
+                <p>
+                  <strong>Certificate ID:</strong><br>
+                  ${certificate.certificateId}
+                </p>
+
+                <p>
+                  <strong>Certificate:</strong><br>
+                  ${certificate.certificateTitle}
+                </p>
+
+                <p>
+                  <strong>Course:</strong><br>
+                  ${certificate.course}
+                </p>
+
+                <p>
+                  <strong>Department:</strong><br>
+                  ${certificate.department}
+                </p>
+
+                <p>
+                  <strong>Result / Grade:</strong><br>
+                  ${certificate.grade}
+                </p>
+
+                <p style="margin-bottom:0;">
+                  <strong>Issue Date:</strong><br>
+                  ${certificate.issueDate}
+                </p>
+
+              </div>
+
+              <p style="
+                font-size:15px;
+                line-height:1.6;
+              ">
+                You can view your certificate or verify its
+                authenticity using the buttons below.
+              </p>
+
+              <div style="
+                text-align:center;
+                margin-top:30px;
+              ">
+
+                <a
+                  href="${viewUrl}"
+                  style="
+                    display:inline-block;
+                    background:#4f46e5;
+                    color:white;
+                    text-decoration:none;
+                    padding:13px 24px;
+                    border-radius:8px;
+                    margin:6px;
+                    font-weight:bold;
+                  "
+                >
+                  View Certificate
+                </a>
+
+                <a
+                  href="${verifyUrl}"
+                  style="
+                    display:inline-block;
+                    background:#198754;
+                    color:white;
+                    text-decoration:none;
+                    padding:13px 24px;
+                    border-radius:8px;
+                    margin:6px;
+                    font-weight:bold;
+                  "
+                >
+                  Verify Certificate
+                </a>
+
+              </div>
+
+              <hr style="
+                border:none;
+                border-top:1px solid #eee;
+                margin:35px 0 20px;
+              ">
+
+              <p style="
+                text-align:center;
+                font-size:13px;
+                color:#777;
+              ">
+                This certificate is digitally secured and
+                verified by TrustLedger.
+              </p>
+
+            </div>
+
+          </div>
+
+        </body>
+        </html>
+      `
+    });
+
+    // Resend can return an error object without throwing
+    if (response.error) {
+      console.error(
+        "❌ Certificate Email Error:",
+        response.error
+      );
+      return false;
+    }
+
+    console.log(
+      `📧 Certificate Email Sent To: ${certificate.email}`
+    );
+
+    console.log(
+      "Email ID:",
+      response.data?.id
+    );
+
+    return true;
+
+  } catch (error) {
+
+    // Email failure will NOT stop certificate generation
+    console.error(
+      "❌ Certificate Email Error:",
+      error
+    );
+
+    return false;
+  }
+}
+
+// ======================================================
+// ISSUE CERTIFICATE PAGE
+// ======================================================
 
 exports.issuePage = (req, res) => {
+
   res.render("issueCertificate");
+
 };
 
-// ================= GENERATE CERTIFICATE =================
+// ======================================================
+// GENERATE CERTIFICATE
+// ======================================================
 
 exports.generateCertificate = async (req, res) => {
+
   try {
+
+    console.log("🔥 NEW CONTROLLER IS RUNNING 🔥");
+
     const {
       studentName,
       rollNumber,
@@ -112,60 +391,145 @@ exports.generateCertificate = async (req, res) => {
       department,
       certificateTitle,
       grade,
-      issueDate
+      issueDate,
+      template
     } = req.body;
 
-    // Generate unique Certificate ID
+    // ==================================================
+    // BASIC VALIDATION
+    // ==================================================
+
+    if (
+      !studentName ||
+      !rollNumber ||
+      !email ||
+      !course ||
+      !department ||
+      !certificateTitle ||
+      !grade ||
+      !issueDate
+    ) {
+
+      return res
+        .status(400)
+        .send("Please fill all certificate details.");
+    }
+
+    // ==================================================
+    // TEMPLATE VALIDATION
+    // ==================================================
+
+    const allowedTemplates = [
+      "classic",
+      "purple",
+      "gold",
+      "blue",
+      "green"
+    ];
+
+    const selectedTemplate =
+      allowedTemplates.includes(template)
+        ? template
+        : "classic";
+
+    // ==================================================
+    // GENERATE CERTIFICATE ID
+    // ==================================================
 
     const certificateId =
       "TL" +
       new Date().getFullYear() +
       Date.now().toString().slice(-6);
 
-    // Generate SHA-256 blockchain-style hash
+    // ==================================================
+    // INTERNAL CERTIFICATE DATA
+    // ==================================================
+
+    const certificateData = {
+
+      certificateId,
+
+      studentName: studentName.trim(),
+
+      rollNumber: rollNumber.trim(),
+
+      email: email.trim(),
+
+      course: course.trim(),
+
+      department: department.trim(),
+
+      certificateTitle:
+        certificateTitle.trim(),
+
+      grade,
+
+      issueDate
+    };
+
+    // ==================================================
+    // GENERATE SHA-256 HASH
+    // ==================================================
 
     const hashData =
-      certificateId +
-      studentName +
-      rollNumber +
-      email +
-      course +
-      department +
-      certificateTitle +
-      grade +
-      issueDate;
+      createHashData(certificateData);
 
     const blockchainHash = crypto
       .createHash("sha256")
       .update(hashData)
       .digest("hex");
 
-    // Verification URL stored inside QR
+    // ==================================================
+    // BASE URL
+    // ==================================================
+
+    const baseUrl =
+      `${req.protocol}://${req.get("host")}`;
+
+    // ==================================================
+    // VERIFICATION URL
+    // ==================================================
 
     const verificationUrl =
-      `${req.protocol}://${req.get("host")}/verify?certificateId=${encodeURIComponent(certificateId)}`;
+      `${baseUrl}/verify?certificateId=${encodeURIComponent(
+        certificateId
+      )}`;
 
-    // QR file path
+    // ==================================================
+    // QR CODE FOLDER
+    // ==================================================
 
     const qrFolder = path.join(
       __dirname,
       "../public/qrcodes"
     );
 
-    // Make sure QR folder exists
-
     if (!fs.existsSync(qrFolder)) {
-      fs.mkdirSync(qrFolder, { recursive: true });
+
+      fs.mkdirSync(
+        qrFolder,
+        {
+          recursive: true
+        }
+      );
     }
 
-    const qrFileName = `${certificateId}.png`;
+    // ==================================================
+    // QR CODE FILE
+    // ==================================================
 
-    const qrFilePath = path.join(
-      qrFolder,
-      qrFileName
-    );
+    const qrFileName =
+      `${certificateId}.png`;
 
-    // Generate REAL QR Code
+    const qrFilePath =
+      path.join(
+        qrFolder,
+        qrFileName
+      );
+
+    // ==================================================
+    // GENERATE QR CODE
+    // ==================================================
 
     await QRCode.toFile(
       qrFilePath,
@@ -175,217 +539,422 @@ exports.generateCertificate = async (req, res) => {
         margin: 2
       }
     );
-// Read existing database
 
-    const database = readDatabase();
+    // ==================================================
+    // READ DATABASE
+    // ==================================================
 
-    if (!Array.isArray(database.certificates)) {
-      database.certificates = [];
+    const database =
+      readDatabase();
+
+    // ==================================================
+    // PREVIOUS BLOCK HASH
+    // ==================================================
+
+    let previousHash =
+      "GENESIS";
+
+    if (
+      database.certificates.length > 0
+    ) {
+
+      const previousCertificate =
+        database.certificates[
+          database.certificates.length - 1
+        ];
+
+      if (
+        previousCertificate.blockchainHash
+      ) {
+
+        previousHash =
+          previousCertificate.blockchainHash;
+
+      }
     }
-    // Get previous certificate hash
 
-let previousHash = "GENESIS";
-
-if (database.certificates.length > 0) {
-
-  previousHash =
-    database.certificates[
-      database.certificates.length - 1
-    ].blockchainHash;
-
-}
-    // Certificate Object
+    // ==================================================
+    // FINAL CERTIFICATE OBJECT
+    // ==================================================
 
     const certificate = {
+
       certificateId,
-      studentName,
-      rollNumber,
-      email,
-      course,
-      department,
-      certificateTitle,
+
+      studentName:
+        certificateData.studentName,
+
+      rollNumber:
+        certificateData.rollNumber,
+
+      email:
+        certificateData.email,
+
+      course:
+        certificateData.course,
+
+      department:
+        certificateData.department,
+
+      certificateTitle:
+        certificateData.certificateTitle,
+
       grade,
+
       issueDate,
 
+      template:
+        selectedTemplate,
+
       blockchainHash,
+
       previousHash,
-      qrCode: `/qrcodes/${qrFileName}`,
 
-      status: "Valid",
+      qrCode:
+        `/qrcodes/${qrFileName}`,
 
-      createdAt: new Date().toISOString()
+      status:
+        "Valid",
+
+      createdAt:
+        new Date().toISOString()
     };
 
-    // Add new certificate
+    // ==================================================
+    // SAVE CERTIFICATE
+    // ==================================================
 
-    database.certificates.push(certificate);
-
-    // Save database
+    database.certificates.push(
+      certificate
+    );
 
     writeDatabase(database);
 
     console.log(
-      "✅ Certificate Generated:",
-      certificateId
+      `✅ Certificate Generated: ${certificateId}`
     );
 
-    // Go to Certificate List
+    console.log(
+      `🎨 Template: ${selectedTemplate}`
+    );
 
-    res.redirect("/certificates");
+    // ==================================================
+    // AUTOMATIC EMAIL
+    // ==================================================
+
+    await sendCertificateEmail(
+      certificate,
+      baseUrl
+    );
+
+    // ==================================================
+    // REDIRECT
+    // ==================================================
+
+    return res.redirect(
+      "/certificates"
+    );
 
   } catch (error) {
+
     console.error(
-      "❌ Certificate Generation Error:",
+      "Certificate Generation Error:",
       error
     );
 
-    res.status(500).send(
-      "Error generating certificate."
+    return res
+      .status(500)
+      .send(
+        "Error generating certificate."
+      );
+  }
+};
+
+// ======================================================
+// CERTIFICATE LIST
+// ======================================================
+
+exports.certificateList = (req, res) => {
+
+  try {
+
+    const database =
+      readDatabase();
+
+    return res.render(
+      "certificateList",
+      {
+        certificates:
+          database.certificates
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Certificate List Error:",
+      error
+    );
+
+    return res.render(
+      "certificateList",
+      {
+        certificates: []
+      }
     );
   }
 };
 
-// ================= CERTIFICATE LIST =================
-
-exports.certificateList = (req, res) => {
-  try {
-    const database = readDatabase();
-
-    res.render("certificateList", {
-      certificates: database.certificates || []
-    });
-
-  } catch (error) {
-    console.error(error);
-
-    res.render("certificateList", {
-      certificates: []
-    });
-  }
-};
-
-// ================= VERIFY PAGE =================
+// ======================================================
+// VERIFY PAGE
+// ======================================================
 
 exports.verifyPage = (req, res) => {
 
-  const certificateId = req.query.certificateId;
+  try {
 
-  // QR code se verification
-  if (certificateId) {
+    const certificateId =
+      req.query.certificateId;
 
-    const database = readDatabase();
+    if (certificateId) {
 
-    const certificate = database.certificates.find(
-      cert => cert.certificateId === certificateId
+      const database =
+        readDatabase();
+
+      const certificate =
+        database.certificates.find(
+          cert =>
+            cert.certificateId ===
+            certificateId
+        );
+
+      let integrityValid =
+        false;
+
+      if (certificate) {
+
+        integrityValid =
+          verifyCertificateIntegrity(
+            certificate
+          );
+      }
+
+      return res.render(
+        "verify",
+        {
+          certificate:
+            certificate || null,
+
+          searched:
+            true,
+
+          integrityValid
+        }
+      );
+    }
+
+    return res.render(
+      "verify",
+      {
+        certificate:
+          null,
+
+        searched:
+          false,
+
+        integrityValid:
+          false
+      }
     );
 
-    let integrityValid = false;
+  } catch (error) {
 
-if (certificate) {
-  integrityValid = verifyCertificateIntegrity(certificate);
-}
+    console.error(
+      "Verify Page Error:",
+      error
+    );
 
-return res.render("verify", {
-  certificate: certificate || null,
-  searched: true,
-  integrityValid: integrityValid
-});
+    return res
+      .status(500)
+      .send(
+        "Error loading verification page."
+      );
   }
-
-  // Normal Verify Certificate page
-  res.render("verify", {
-    certificate: null,
-    searched: false,
-    integrityValid: false
-  });
-
 };
+
+// ======================================================
+// VERIFY CERTIFICATE MANUALLY
+// ======================================================
+
 exports.verifyCertificate = (req, res) => {
 
   try {
 
-    const certificateId = req.body.certificateId.trim();
+    const certificateId =
+      (req.body.certificateId || "")
+        .trim();
 
-    const database = readDatabase();
+    if (!certificateId) {
 
-    const certificate = database.certificates.find(
-      cert =>
-        cert.certificateId.toLowerCase() ===
-        certificateId.toLowerCase()
-    );
+      return res.render(
+        "verify",
+        {
+          certificate:
+            null,
 
-    let integrityValid = false;
+          searched:
+            true,
 
-if (certificate) {
-  integrityValid = verifyCertificateIntegrity(certificate);
-}
-
-res.render("verify", {
-  certificate: certificate || null,
-  searched: true,
-  integrityValid: integrityValid
-});
-
-  } catch (error) {
-
-    console.error("Verification Error:", error);
-
-    res.status(500).send("Error verifying certificate.");
-
-  }
-
-};
-
-// ================= CERTIFICATE PAGE =================
-exports.certificatePage = (req, res) => {
-  try {
-
-    const certificateId = req.query.id;
-
-    const database = readDatabase();
-
-    const certificate = database.certificates.find(
-      cert => cert.certificateId === certificateId
-    );
-
-    if (!certificate) {
-      return res.status(404).send("Certificate not found");
+          integrityValid:
+            false
+        }
+      );
     }
 
-    res.render("certificate", {
-      certificate: certificate
-    });
+    const database =
+      readDatabase();
+
+    const certificate =
+      database.certificates.find(
+        cert =>
+          cert.certificateId &&
+          cert.certificateId
+            .toLowerCase() ===
+          certificateId
+            .toLowerCase()
+      );
+
+    let integrityValid =
+      false;
+
+    if (certificate) {
+
+      integrityValid =
+        verifyCertificateIntegrity(
+          certificate
+        );
+    }
+
+    return res.render(
+      "verify",
+      {
+        certificate:
+          certificate || null,
+
+        searched:
+          true,
+
+        integrityValid
+      }
+    );
 
   } catch (error) {
 
-    console.error("Certificate View Error:", error);
+    console.error(
+      "Verification Error:",
+      error
+    );
 
-    res.status(500).send("Error loading certificate");
-
+    return res
+      .status(500)
+      .send(
+        "Error verifying certificate."
+      );
   }
 };
 
-exports.blockchainRecords = (req, res) => {
+// ======================================================
+// VIEW CERTIFICATE
+// ======================================================
+
+exports.certificatePage = (req, res) => {
+
   try {
 
-    const database = readDatabase();
+    const certificateId =
+      req.query.id;
 
-const certificates = database.certificates || [];
+    const database =
+      readDatabase();
 
-const chainValid = verifyBlockchainChain(certificates);
+    const certificate =
+      database.certificates.find(
+        cert =>
+          cert.certificateId ===
+          certificateId
+      );
 
-res.render("blockchain", {
-  certificates: certificates,
-  chainValid: chainValid
-});
+    if (!certificate) {
+
+      return res
+        .status(404)
+        .send(
+          "Certificate not found."
+        );
+    }
+
+    return res.render(
+      "certificate",
+      {
+        certificate
+      }
+    );
 
   } catch (error) {
 
-    console.error("Blockchain Records Error:", error);
+    console.error(
+      "Certificate View Error:",
+      error
+    );
 
-    res.render("blockchain", {
-      certificates: []
-    });
+    return res
+      .status(500)
+      .send(
+        "Error loading certificate."
+      );
+  }
+};
 
+// ======================================================
+// BLOCKCHAIN RECORDS
+// ======================================================
+
+exports.blockchainRecords = (req, res) => {
+
+  try {
+
+    const database =
+      readDatabase();
+
+    const certificates =
+      database.certificates;
+
+    const chainValid =
+      verifyBlockchainChain(
+        certificates
+      );
+
+    return res.render(
+      "blockchain",
+      {
+        certificates,
+        chainValid
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Blockchain Records Error:",
+      error
+    );
+
+    return res.render(
+      "blockchain",
+      {
+        certificates: [],
+        chainValid: false
+      }
+    );
   }
 };

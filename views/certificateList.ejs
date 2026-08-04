@@ -5,37 +5,164 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Certificate List | TrustLedger</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
 
-<link rel="stylesheet" href="/css/style.css">
+<link
+rel="stylesheet"
+href="/css/style.css">
+
+<style>
+
+/* =========================================
+   TEMPLATE BADGES
+========================================= */
+
+.template-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.template-classic-badge {
+
+    background: #eeeeee;
+
+    color: #222222;
+
+    border: 1px solid #cccccc;
+}
+
+.template-purple-badge {
+
+    background: #eeeafb;
+
+    color: #5c3fa3;
+
+    border: 1px solid #c8baff;
+}
+
+.template-gold-badge {
+
+    background: #fff5d5;
+
+    color: #8a651b;
+
+    border: 1px solid #e0c36c;
+}
+
+.template-blue-badge {
+
+    background: #e8f4ff;
+
+    color: #1769aa;
+
+    border: 1px solid #b8dafa;
+}
+
+.template-green-badge {
+
+    background: #eafaf0;
+
+    color: #397653;
+
+    border: 1px solid #b9ddc7;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.empty-state {
+
+    padding: 30px;
+}
+
+.empty-state > i {
+
+    font-size: 45px;
+
+    color: #999;
+
+    margin-bottom: 15px;
+
+    display: block;
+}
+
+.empty-state h5 {
+
+    font-weight: 600;
+
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+
+    color: #777;
+
+    margin-bottom: 20px;
+}
+
+</style>
 
 </head>
 
+
 <body>
+
 
 <div class="dashboard-wrapper">
 
-<!-- Sidebar -->
+
+<!-- =========================================
+     SIDEBAR
+========================================= -->
 
 <div class="sidebar">
+
 
 <div class="sidebar-logo">
 
 <i class="bi bi-shield-check"></i>
 
-<h3>TrustLedger</h3>
+<h3>
+TrustLedger
+</h3>
 
 </div>
 
+
 <ul>
+
 
 <li>
 
@@ -49,6 +176,7 @@ Dashboard
 
 </li>
 
+
 <li>
 
 <a href="/issue">
@@ -60,6 +188,7 @@ Issue Certificate
 </a>
 
 </li>
+
 
 <li class="active">
 
@@ -73,6 +202,7 @@ Certificate List
 
 </li>
 
+
 <li>
 
 <a href="/verify">
@@ -84,6 +214,7 @@ Verify Certificate
 </a>
 
 </li>
+
 
 <li>
 
@@ -97,6 +228,7 @@ Blockchain Records
 
 </li>
 
+
 <li>
 
 <a href="/logout">
@@ -109,163 +241,392 @@ Logout
 
 </li>
 
+
 </ul>
+
 
 </div>
 
-<!-- Main Content -->
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
 
 <div class="dashboard-content">
 
-<h2>Issued Certificates</h2>
+
+<h2>
+Issued Certificates
+</h2>
+
 
 <p>
 
-View and manage all blockchain secured certificates.
+View and manage all blockchain-secured
+certificates.
 
 </p>
+
+
 <div class="certificate-form">
+
 
 <div class="table-responsive">
 
+
 <table class="table recent-table align-middle">
+
 
 <thead>
 
+
 <tr>
 
-<th>Certificate ID</th>
+<th>
+Certificate ID
+</th>
 
-<th>Student Name</th>
+<th>
+Student Name
+</th>
 
-<th>Roll No.</th>
+<th>
+Roll No.
+</th>
 
-<th>Course</th>
+<th>
+Course
+</th>
 
-<th>Issue Date</th>
+<th>
+Issue Date
+</th>
 
-<th>Status</th>
+<th>
+Template
+</th>
 
-<th>Action</th>
+<th>
+Status
+</th>
+
+<th>
+Action
+</th>
 
 </tr>
 
+
 </thead>
+
+
 <tbody>
 
-<% if (certificates && certificates.length > 0) { %>
 
-    <% certificates.slice().reverse().forEach(function(cert) { %>
+<%
+if (
+    certificates &&
+    certificates.length > 0
+) {
+%>
 
-    <tr>
 
-        <td>
-            <strong><%= cert.certificateId %></strong>
-        </td>
+<%
+certificates
+.slice()
+.reverse()
+.forEach(function(cert) {
 
-        <td>
-            <%= cert.studentName %>
-        </td>
+    let template =
+        cert.template || "classic";
 
-        <td>
-            <%= cert.rollNumber %>
-        </td>
+    let templateName =
+        "Classic";
 
-        <td>
-            <%= cert.course %>
-        </td>
+    let templateIcon =
+        "bi-award";
 
-        <td>
-            <%= cert.issueDate %>
-        </td>
+    let templateBadge =
+        "template-classic-badge";
 
-        <td>
 
-            <span class="badge bg-success">
+    if (template === "purple") {
 
-                <i class="bi bi-patch-check-fill"></i>
-                <%= cert.status %>
+        templateName =
+            "Purple";
 
-            </span>
+        templateIcon =
+            "bi-patch-check";
 
-        </td>
+        templateBadge =
+            "template-purple-badge";
+    }
 
-        <td>
+    else if (template === "gold") {
 
-            <a
-                href="/certificate?id=<%= cert.certificateId %>"
-                class="btn btn-sm btn-admin">
+        templateName =
+            "Gold";
 
-                <i class="bi bi-eye-fill"></i>
-                View
+        templateIcon =
+            "bi-trophy";
 
-            </a>
+        templateBadge =
+            "template-gold-badge";
+    }
 
-        </td>
+    else if (template === "blue") {
 
-    </tr>
+        templateName =
+            "Blue";
 
-    <% }); %>
+        templateIcon =
+            "bi-mortarboard";
 
-<% } else { %>
+        templateBadge =
+            "template-blue-badge";
+    }
 
-    <tr>
+    else if (template === "green") {
 
-        <td colspan="7" class="text-center py-5">
+        templateName =
+            "Green";
 
-            <div class="empty-state">
+        templateIcon =
+            "bi-shield-check";
 
-                <i class="bi bi-folder-x"></i>
+        templateBadge =
+            "template-green-badge";
+    }
+%>
 
-                <h5>No Certificates Found</h5>
 
-                <p>
-                    No certificates have been issued yet.
-                </p>
+<tr>
 
-                <a href="/issue" class="btn-admin">
 
-                    <i class="bi bi-plus-circle-fill"></i>
+<!-- CERTIFICATE ID -->
 
-                    Issue First Certificate
+<td>
 
-                </a>
+<strong>
 
-            </div>
+<%= cert.certificateId %>
 
-        </td>
+</strong>
 
-    </tr>
+</td>
 
-<% } %>
+
+<!-- STUDENT -->
+
+<td>
+
+<%= cert.studentName %>
+
+</td>
+
+
+<!-- ROLL NUMBER -->
+
+<td>
+
+<%= cert.rollNumber %>
+
+</td>
+
+
+<!-- COURSE -->
+
+<td>
+
+<%= cert.course %>
+
+</td>
+
+
+<!-- ISSUE DATE -->
+
+<td>
+
+<%= cert.issueDate %>
+
+</td>
+
+
+<!-- TEMPLATE -->
+
+<td>
+
+
+<span
+class="template-badge <%= templateBadge %>">
+
+
+<i class="bi <%= templateIcon %>"></i>
+
+
+<%= templateName %>
+
+
+</span>
+
+
+</td>
+
+
+<!-- STATUS -->
+
+<td>
+
+
+<span class="badge bg-success">
+
+
+<i class="bi bi-patch-check-fill"></i>
+
+
+<%= cert.status || "Valid" %>
+
+
+</span>
+
+
+</td>
+
+
+<!-- ACTION -->
+
+<td>
+
+
+<a
+href="/certificate?id=<%= encodeURIComponent(cert.certificateId) %>"
+class="btn btn-sm btn-admin">
+
+
+<i class="bi bi-eye-fill"></i>
+
+
+View
+
+
+</a>
+
+
+</td>
+
+
+</tr>
+
+
+<%
+});
+%>
+
+
+<%
+} else {
+%>
+
+
+<tr>
+
+
+<td
+colspan="8"
+class="text-center py-5">
+
+
+<div class="empty-state">
+
+
+<i class="bi bi-folder-x"></i>
+
+
+<h5>
+
+No Certificates Found
+
+</h5>
+
+
+<p>
+
+No certificates have been issued yet.
+
+</p>
+
+
+<a
+href="/issue"
+class="btn-admin">
+
+
+<i class="bi bi-plus-circle-fill"></i>
+
+
+Issue First Certificate
+
+
+</a>
+
+
+</div>
+
+
+</td>
+
+
+</tr>
+
+
+<%
+}
+%>
+
 
 </tbody>
 
 
-
-
 </table>
 
-</div>
 
 </div>
+
+
+</div>
+
+
+<!-- =========================================
+     FOOTER
+========================================= -->
+
 <div class="dashboard-footer">
+
 
 <p>
 
 Developed by
 
-<strong>Anushka Barai</strong>
+<strong>
+Anushka Barai
+</strong>
 
 </p>
 
-</div>
 
 </div>
 
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</div>
+
+
+<script
+src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
 
 </body>
 
